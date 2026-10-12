@@ -24,4 +24,4 @@ Framework preset: `None`. Build command: vazio. Build output directory: `public`
 
 Nome: Hugo Augusto Variani
 RA: 2026108212
-URL: https://
+URL: https://2bim-avalia1-cyv.pages.dev
