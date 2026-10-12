@@ -1,46 +1,106 @@
-// script.js
-// Versao inicial: todo o trabalho acontece no navegador.
-// A tarefa consiste em levar gerarDesenho para o servidor (Pages Functions)
-// e fazer esta pagina apenas enviar o numero e exibir a resposta.
-
-import { gerarDesenho, numeroValido } from "./desenho.js";
 
 const formulario = document.getElementById("formulario");
 const campoNumero = document.getElementById("numero");
-const campoEmail = document.getElementById("email");
-const area = document.getElementById("desenho");
 const mensagem = document.getElementById("mensagem");
+const areaDesenho = document.getElementById("desenho");
 const botaoBaixar = document.getElementById("baixar");
 
-let svgAtual = "";
+let idToken = null;
+let svgAtual = null;
 
-formulario.addEventListener("submit", (evento) => {
+function mostrarMensagem(texto) {
+  mensagem.textContent = texto;
+}
+
+function receberLoginGoogle(resposta) {
+  idToken = resposta.credential;
+  mostrarMensagem("Login realizado! Agora escolha um número e clique em Desenhar.");
+}
+
+window.onload = function () {
+  if (!window.google?.accounts?.id) {
+    mostrarMensagem("Não foi possível carregar o login do Google.");
+    return;
+  }
+
+  google.accounts.id.initialize({
+    client_id: "COLE_SEU_CLIENT_ID_AQUI",
+    callback: receberLoginGoogle
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById("google-login"),
+    {
+      theme: "outline",
+      size: "large",
+      text: "signin_with",
+      locale: "pt-BR"
+    }
+  );
+};
+
+formulario.addEventListener("submit", async function (evento) {
   evento.preventDefault();
-  mensagem.textContent = "";
+  areaDesenho.replaceChildren();
+  botaoBaixar.hidden = true;
+  svgAtual = null;
 
   const numero = Number(campoNumero.value);
-  const email = campoEmail.value.trim();
 
-  if (!numeroValido(numero)) {
-    mensagem.textContent = "Digite um inteiro entre 1 e 100.";
-    return;
-  }
-  if (email === "") {
-    mensagem.textContent = "Informe um e-mail.";
+  if (!Number.isInteger(numero) || numero < 1 || numero > 100) {
+    mostrarMensagem("Digite um número inteiro entre 1 e 100.");
     return;
   }
 
-  svgAtual = gerarDesenho(numero, email);
-  area.innerHTML = svgAtual;
-  botaoBaixar.hidden = false;
+  if (!idToken) {
+    mostrarMensagem("Faça login com sua conta Google antes de desenhar.");
+    return;
+  }
+
+  mostrarMensagem("Gerando desenho...");
+
+  try {
+    const resposta = await fetch("/api/desenho", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${idToken}`
+      },
+      body: JSON.stringify({ numero })
+    });
+
+    if (!resposta.ok) {
+      const erro = await resposta.text();
+      mostrarMensagem(erro || `Erro ${resposta.status} ao gerar o desenho.`);
+      return;
+    }
+
+    svgAtual = await resposta.text();
+
+    const imagem = document.createElement("img");
+    imagem.alt = `Desenho assinado número ${numero}`;
+    imagem.src = URL.createObjectURL(
+      new Blob([svgAtual], { type: "image/svg+xml" })
+    );
+
+    areaDesenho.appendChild(imagem);
+    botaoBaixar.hidden = false;
+    mostrarMensagem("Desenho gerado com sucesso!");
+  } catch {
+    mostrarMensagem("Não foi possível conectar ao servidor.");
+  }
 });
 
-botaoBaixar.addEventListener("click", () => {
+botaoBaixar.addEventListener("click", function () {
+  if (!svgAtual) return;
+
   const arquivo = new Blob([svgAtual], { type: "image/svg+xml" });
   const url = URL.createObjectURL(arquivo);
   const link = document.createElement("a");
+
   link.href = url;
-  link.download = "exemplo.svg";
+  link.download = "desenho-assinado.svg";
   link.click();
+
   URL.revokeObjectURL(url);
 });
