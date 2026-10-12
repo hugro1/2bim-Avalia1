@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" role="img" aria-labelledby="titulo descricao">
+  <title id="titulo">Exemplo de desenho</title>
+  <desc id="descricao">Desenho vetorial de uma casa com sol, telhado, porta e janelas.</desc>
+  <rect width="600" height="400" fill="#f5fbff"/>
+  <circle cx="490" cy="75" r="34" fill="#ffd166"/>
+  <path d="M0 320 Q150 285 300 320 T600 315 V400 H0Z" fill="#b7e4c7"/>
+  <rect x="185" y="180" width="230" height="155" rx="3" fill="#f4a261" stroke="#7f5539" stroke-width="4"/>
+  <path d="M155 190 L300 75 L445 190 Z" fill="#bc4749" stroke="#7f1d1d" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="278" y="250" width="48" height="85" fill="#8d5524" stroke="#5c3a21" stroke-width="3"/>
+  <circle cx="315" cy="292" r="3.5" fill="#fefae0"/>
+  <rect x="210" y="215" width="48" height="42" fill="#caf0f8" stroke="#5c3a21" stroke-width="3"/>
+  <path d="M234 215 V257 M210 236 H258" stroke="#5c3a21" stroke-width="2"/>
+  <rect x="342" y="215" width="48" height="42" fill="#caf0f8" stroke="#5c3a21" stroke-width="3"/>
+  <path d="M366 215 V257 M342 236 H390" stroke="#5c3a21" stroke-width="2"/>
+  <path d="M80 335 Q95 300 110 335 M70 335 H120" fill="none" stroke="#40916c" stroke-width="5" stroke-linecap="round"/>
+  <path d="M475 335 Q490 295 505 335 M465 335 H515" fill="none" stroke="#40916c" stroke-width="5" stroke-linecap="round"/>
+</svg>
