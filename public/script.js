@@ -24,7 +24,7 @@ window.onload = function () {
   }
 
   google.accounts.id.initialize({
-    client_id: "COLE_SEU_CLIENT_ID_AQUI",
+    client_id: "612970592259-cksb0t8ceenui0rdfcl6uuhfgccomq4g.apps.googleusercontent.com",
     callback: receberLoginGoogle
   });
 
